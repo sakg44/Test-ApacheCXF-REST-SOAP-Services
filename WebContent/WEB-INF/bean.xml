@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:jaxrs="http://cxf.apache.org/jaxrs"
+	xmlns:jaxws="http://cxf.apache.org/jaxws"
+	xsi:schemaLocation="
+http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans.xsd
+http://cxf.apache.org/jaxrs
+http://cxf.apache.org/schemas/jaxrs.xsd
+http://cxf.apache.org/jaxws
+http://cxf.apache.org/schemas/jaxws.xsd">
+
+
+	<import resource="classpath:META-INF/cxf/cxf.xml" />
+
+	<import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
+
+	<bean id="bookService"
+		class="org.abdou.ws.servicesImpl.BookServiceImpl" />
+	<bean id="authorService"
+		class="org.abdou.ws.servicesImpl.AuthorServiceImpl" />
+	
+
+
+
+	<!-- JAX-RS -->
+	<jaxrs:server id="bookServiceRS" address="/rest/" >
+		<jaxrs:serviceBeans>
+			<ref bean="bookService" />
+		</jaxrs:serviceBeans>
+		<jaxrs:extensionMappings>
+			<entry key="xml" value="application/xml" />
+			<entry key="json" value="application/json" />
+		</jaxrs:extensionMappings>
+		 
+		<jaxrs:providers>
+			<bean class="org.codehaus.jackson.jaxrs.JacksonJsonProvider" />
+			<bean class="org.abdou.interceptors.StringFilter">
+		  </bean> 
+		</jaxrs:providers>
+	</jaxrs:server>
+
+	<!-- <jaxrs:server id="authorServiceRS" address="/rest/author/"> <jaxrs:serviceBeans> 
+		<ref bean="authorService" /> </jaxrs:serviceBeans> </jaxrs:server> -->
+
+	<!-- JAX-WS org.abdou.ws.servicesImpl.BookServiceImpl -->
+	<jaxws:endpoint address="/book" id="bookSericeWS"
+		implementor="#bookService" />
+
+	<!-- <jaxws:endpoint address="/author" id="authorServiceWS" implementor="#authorService" 
+		/> -->
+
+
+
+
+</beans>
