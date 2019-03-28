@@ -20,6 +20,8 @@ http://cxf.apache.org/schemas/jaxws.xsd">
 		class="org.abdou.ws.servicesImpl.BookServiceImpl" />
 	<bean id="authorService"
 		class="org.abdou.ws.servicesImpl.AuthorServiceImpl" />
+	<bean id="passwordValidationCallBack"
+		class="org.abdou.security.AuthentificationChecker" />
 	
 
 
@@ -33,11 +35,12 @@ http://cxf.apache.org/schemas/jaxws.xsd">
 			<entry key="xml" value="application/xml" />
 			<entry key="json" value="application/json" />
 		</jaxrs:extensionMappings>
+		
 		 
 		<jaxrs:providers>
 			<bean class="org.codehaus.jackson.jaxrs.JacksonJsonProvider" />
-			<bean class="org.abdou.interceptors.StringFilter">
-		  </bean> 
+			  <bean class="org.abdou.interceptors.StringFilter">
+		  </bean>
 		</jaxrs:providers>
 	</jaxrs:server>
 
@@ -46,7 +49,21 @@ http://cxf.apache.org/schemas/jaxws.xsd">
 
 	<!-- JAX-WS org.abdou.ws.servicesImpl.BookServiceImpl -->
 	<jaxws:endpoint address="/book" id="bookSericeWS"
-		implementor="#bookService" />
+		implementor="#bookService">
+		<jaxws:inInterceptors>
+			<bean class="org.apache.cxf.ws.security.wss4j.WSS4JInInterceptor">
+			<constructor-arg>
+				<map>
+				<entry key="action" value="UsernameToken"/>
+				<entry key="passwordType" value="PasswordText"/>
+				<entry key="passWordCallbackRef"> 
+				<ref bean= "passwordValidationCallBack"/>
+				</entry>
+				</map>
+			</constructor-arg>
+			</bean>
+		</jaxws:inInterceptors>
+		</jaxws:endpoint>
 
 	<!-- <jaxws:endpoint address="/author" id="authorServiceWS" implementor="#authorService" 
 		/> -->

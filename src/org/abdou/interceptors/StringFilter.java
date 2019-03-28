@@ -7,11 +7,12 @@ import javax.ws.rs.container.ContainerResponseContext;
 import javax.ws.rs.container.ContainerResponseFilter;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.ext.Provider;
 
 import org.apache.cxf.jaxrs.ext.MessageContext;
 
 
-
+@Provider
 public class StringFilter implements ContainerResponseFilter {
 	private @Context MessageContext jaxrsContext;
 

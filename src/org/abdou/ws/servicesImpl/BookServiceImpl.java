@@ -1,5 +1,6 @@
 package org.abdou.ws.servicesImpl;
 
+import java.io.IOException;
 import java.util.List;
 
 import javax.jws.WebMethod;
@@ -27,11 +28,19 @@ import org.apache.cxf.binding.xml.XMLBinding;
 import org.apache.cxf.jaxrs.ext.MessageContext;
 import org.apache.cxf.jaxrs.provider.xmlbeans.XMLBeansJSONProvider;
 import org.apache.cxf.jaxws.context.WebServiceContextImpl;
-import org.apache.jasper.xmlparser.XMLString;
+import org.apache.log4j.Appender;
+import org.apache.log4j.AppenderSkeleton;
+import org.apache.log4j.Category;
+import org.apache.log4j.FileAppender;
+import org.apache.log4j.HTMLLayout;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.apache.log4j.spi.AppenderAttachable;
+import org.apache.log4j.xml.XMLLayout;
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.map.util.JSONPObject;
-import org.eclipse.jetty.util.ajax.JSONObjectConvertor;
+
 
 import com.sun.xml.xsom.parser.XMLParser;
 
@@ -39,6 +48,10 @@ import com.sun.xml.xsom.parser.XMLParser;
 @Path("BookServices")
 public class BookServiceImpl implements IBookService{
 
+	private static Logger logger= Logger.getLogger(BookServiceImpl.class);
+	public static Category cat=Category.getInstance(BookServiceImpl.class.getName());
+	
+	
 	//	@Context WebServiceContext jaxwsContext;
 	@Context MessageContext jaxrsContext;
 
@@ -48,7 +61,25 @@ public class BookServiceImpl implements IBookService{
 	@Path("/getBookById/{id}")
 	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	public Book getBook(@PathParam("id")Long id) throws BookNotFoundException {
-
+       
+		//ou logger.
+		//cat.setPriority(Priority.WARN) ;
+		//cat.warn("message de test"); //prioty remplacer par level
+		//logger.addAppender(AppenderSkeleton);
+		
+		logger.setAdditivity(false);
+		try {
+		FileAppender fa = new FileAppender(new HTMLLayout(), "C:\\Users\\serigneabdoukhadre.g\\Documents\\loggerTest\\log.html");
+		fa.setName("FichierLog");
+		logger.addAppender(fa);
+		} catch (IOException e) {
+		e.printStackTrace();
+		}
+		
+	logger.debug("la on est dans la fonction getbook avec l'id:"+ id);// category depreciateremplacer par logger
+		
+	
+		
 		Book myBook=new Book();
 		myBook.setType(BookType.ROMAN_HISTORIQUE);
 		myBook.setTitle("Madame Bovary");
